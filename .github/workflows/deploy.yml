@@ -11,33 +11,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK
+      - name: ⚙️ Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up Google Cloud SDK
+      - name: ☁️ Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Authorize Docker for Artifact Registry
-        run: gcloud auth configure-docker us-east1-docker.pkg.dev
+      - name: 🔐 Authorize Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker us-east1-docker.pkg.dev
 
-      - name: Build Docker image
+      - name: 🛠️ Build Docker image
         run: |
           docker build -t us-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/hpe-simulation/hpe-service .
 
-      - name: Push Docker image to Artifact Registry
+      - name: 📤 Push Docker image to Artifact Registry
         run: |
           docker push us-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/hpe-simulation/hpe-service
 
-      - name: Deploy to Cloud Run
+      - name: 🚀 Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
             --image us-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/hpe-simulation/hpe-service \
