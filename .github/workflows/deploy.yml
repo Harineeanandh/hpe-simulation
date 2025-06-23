@@ -31,12 +31,9 @@ jobs:
           echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > /tmp/account.json
           gcloud auth activate-service-account --key-file=/tmp/account.json
 
-      - name: Authenticate Docker to Artifact Registry
-        uses: docker/login-action@v3
-        with:
-          registry: us-east1-docker.pkg.dev
-          username: _json_key
-          password: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Authenticate Docker with gcloud
+        run: |
+          gcloud auth configure-docker us-east1-docker.pkg.dev
 
       - name: Build Docker image
         run: |
