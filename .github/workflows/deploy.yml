@@ -28,7 +28,7 @@ jobs:
 
       - name: Activate Service Account
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" > /tmp/account.json
+          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > /tmp/account.json
           gcloud auth activate-service-account --key-file=/tmp/account.json
 
       - name: Authenticate Docker to Artifact Registry
